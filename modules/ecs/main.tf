@@ -1,3 +1,7 @@
+resource "aws_ecs_cluster" "main" {
+  name = "trainee-ecs-cluster"
+}
+
 resource "aws_ecs_task_definition" "nginx_task" {
   family                   = "nginx-task"
   requires_compatibilities  = ["FARGATE"]
@@ -7,12 +11,18 @@ resource "aws_ecs_task_definition" "nginx_task" {
 
   container_definitions = jsonencode([{
     name      = "nginx-container"
-    image     = "nginx:latest"  # Nginx public Image
+    image     = "nginx:1.21.6"  # Nginx public Image
     essential = true
 
     mountPoints = [{
       sourceVolume  = "efs-volume"
       containerPath = "/usr/share/nginx/html"
+    }]
+
+    portMappings = [{
+      containerPort = 80
+      hostPort      = 80
+      protocol      = "tcp"
     }]
   }])
 
@@ -33,8 +43,8 @@ resource "aws_ecs_service" "nginx_service" {
   launch_type     = "FARGATE"
 
   load_balancer {
-    target_group_arn = module.alb.target_group_arn
-    container_name   = "trainee-container"
+    target_group_arn = var.alb_target_group_arn
+    container_name   = "nginx-container"
     container_port   = 80
   }
 
@@ -53,7 +63,7 @@ resource "aws_security_group" "ecs_sg" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    security_groups = [aws_security_group.alb_sg.id] # Allows traffic from ALB 
+    security_groups = [var.alb_sg_id] # Allows traffic from ALB
   }
 
   tags = {

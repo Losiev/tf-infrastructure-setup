@@ -22,3 +22,13 @@ variable "vpc_id" {
   description = "VPC ID for ECS"
   type        = string
 }
+
+variable "alb_sg_id" {
+  description = "The security group ID of ALB"
+  type        = string
+}
+
+variable "alb_target_group_arn" {
+  description = "Target Group ARN from ALB"
+  type        = string
+}

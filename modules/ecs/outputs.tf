@@ -11,3 +11,11 @@ output "ecs_service_name" {
   value       = aws_ecs_service.nginx_service.name
   description = "The name of the ECS service"
 }
+
+output "ecs_service_id" {
+  value = aws_ecs_service.nginx_service.id
+}
+
+output "ecs_cluster_id" {
+  value = aws_ecs_cluster.main.id
+}
