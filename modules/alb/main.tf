@@ -39,3 +39,19 @@ resource "aws_lb_target_group_attachment" "ecs_target_group_attachment" {
   target_id        = aws_ecs_service.trainee_ecs_service.id
   port             = 80
 }
+
+resource "aws_security_group" "alb_sg" {
+  name        = "alb_sg"
+  description = "Allow incoming traffic to the ALB"
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "alb_sg"
+  }
+}

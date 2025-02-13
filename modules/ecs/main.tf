@@ -20,7 +20,7 @@ resource "aws_ecs_task_definition" "nginx_task" {
     name = "efs-volume"
 
     efs_volume_configuration {
-      file_system_id = var.efs_id 
+      file_system_id = var.efs_id
     }
   }
 }
@@ -36,5 +36,21 @@ resource "aws_ecs_service" "nginx_service" {
     subnets          = var.subnet_ids
     security_groups = [var.security_group_id]
     assign_public_ip = true
+  }
+}
+
+resource "aws_security_group" "ecs_sg" {
+  name        = "ecs_sg"
+  description = "Allow incoming traffic from ALB to ECS instances"
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    security_groups = [aws_security_group.alb_sg.id] # Allows traffic from ALB 
+  }
+
+  tags = {
+    Name = "ecs_sg"
   }
 }
