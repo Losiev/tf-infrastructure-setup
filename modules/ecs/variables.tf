@@ -17,3 +17,8 @@ variable "efs_id" {
   description = "The ID of the EFS file system"
   type        = string
 }
+
+variable "vpc_id" {
+  description = "VPC ID for ECS"
+  type        = string
+}
