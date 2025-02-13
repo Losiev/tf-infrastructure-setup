@@ -43,7 +43,8 @@ resource "aws_lb_target_group_attachment" "ecs_target_group_attachment" {
 resource "aws_security_group" "alb_sg" {
   name        = "alb_sg"
   description = "Allow incoming traffic to the ALB"
-
+  vpc_id      = var.vpc_id
+  
   ingress {
     from_port   = 80
     to_port     = 80

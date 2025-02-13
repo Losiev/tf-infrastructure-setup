@@ -32,6 +32,12 @@ resource "aws_ecs_service" "nginx_service" {
   desired_count   = 1  # Here I configured service to run once
   launch_type     = "FARGATE"
 
+  load_balancer {
+    target_group_arn = module.alb.target_group_arn
+    container_name   = "trainee-container"
+    container_port   = 80
+  }
+
   network_configuration {
     subnets          = var.subnet_ids
     security_groups = [var.security_group_id]
@@ -42,7 +48,7 @@ resource "aws_ecs_service" "nginx_service" {
 resource "aws_security_group" "ecs_sg" {
   name        = "ecs_sg"
   description = "Allow incoming traffic from ALB to ECS instances"
-
+  vpc_id      = var.vpc_id
   ingress {
     from_port   = 80
     to_port     = 80
