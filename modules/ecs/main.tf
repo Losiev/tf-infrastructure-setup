@@ -59,11 +59,19 @@ resource "aws_security_group" "ecs_sg" {
   name        = "ecs_sg"
   description = "Allow incoming traffic from ALB to ECS instances"
   vpc_id      = var.vpc_id
+
   ingress {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
     security_groups = [var.alb_sg_id] # Allows traffic from ALB
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"  # All traffic
+    cidr_blocks = ["0.0.0.0/0"]  # Allow all outbound traffic
   }
 
   tags = {
