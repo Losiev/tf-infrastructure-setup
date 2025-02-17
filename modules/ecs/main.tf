@@ -2,24 +2,52 @@ resource "aws_ecs_cluster" "main" {
   name = "trainee-ecs-cluster"
 }
 
+resource "aws_security_group" "ecs_sg" {
+  name        = "ecs-sg"
+  description = "Allow traffic for ECS"
+  vpc_id      = var.vpc_id
+
+  ingress {
+    from_port       = 80
+    to_port         = 80
+    protocol        = "tcp"
+    security_groups = [var.alb_sg_id]
+  }
+
+  ingress {
+    from_port        = 2049
+    to_port          = 2049
+    protocol         = "tcp"
+    security_groups  = [var.efs_sg_id]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+}
+
 resource "aws_ecs_task_definition" "nginx_task" {
   family                   = "nginx-task"
   requires_compatibilities  = ["FARGATE"]
   network_mode             = "awsvpc"
-  cpu                      = "256"
-  memory                   = "512"
+  cpu                      = "1024"
+  memory                   = "2048"
 
   container_definitions = jsonencode([{
     name      = "nginx-container"
-    image     = "nginx:1.21.6"  # Nginx public Image
+    image     = "nginx:1.21.6"
     essential = true
 
-    mountPoints = [{
+    mountPoints = [ {
       sourceVolume  = "efs-volume"
       containerPath = "/usr/share/nginx/html"
     }]
 
-    portMappings = [{
+    portMappings = [ {
       containerPort = 80
       hostPort      = 80
       protocol      = "tcp"
@@ -52,29 +80,5 @@ resource "aws_ecs_service" "nginx_service" {
     subnets          = var.subnet_ids
     security_groups = [var.security_group_id]
     assign_public_ip = true
-  }
-}
-
-resource "aws_security_group" "ecs_sg" {
-  name        = "ecs_sg"
-  description = "Allow incoming traffic from ALB to ECS instances"
-  vpc_id      = var.vpc_id
-
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    security_groups = [var.alb_sg_id] # Allows traffic from ALB
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"  # All traffic
-    cidr_blocks = ["0.0.0.0/0"]  # Allow all outbound traffic
-  }
-
-  tags = {
-    Name = "ecs_sg"
   }
 }

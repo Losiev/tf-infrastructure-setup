@@ -28,6 +28,11 @@ variable "alb_sg_id" {
   type        = string
 }
 
+variable "efs_sg_id" {
+  description = "Security Group ID for EFS"
+  type        = string
+}
+
 variable "alb_target_group_arn" {
   description = "Target Group ARN from ALB"
   type        = string

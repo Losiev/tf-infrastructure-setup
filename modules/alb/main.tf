@@ -19,8 +19,8 @@ resource "aws_lb_target_group" "trainee_target_group" {
     path                = "/"
     port                = 80
     protocol            = "HTTP"
-    timeout             = 5
-    healthy_threshold   = 3
+    timeout             = 10
+    healthy_threshold   = 2
     unhealthy_threshold = 3
   }
 }
