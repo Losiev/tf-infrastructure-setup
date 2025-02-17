@@ -15,6 +15,13 @@ resource "aws_security_group" "ecs_sg" {
   }
 
   ingress {
+    from_port        = 443
+    to_port          = 443
+    protocol         = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
     from_port        = 2049
     to_port          = 2049
     protocol         = "tcp"
@@ -42,10 +49,18 @@ resource "aws_ecs_task_definition" "nginx_task" {
     image     = "nginx:1.21.6"
     essential = true
 
-    mountPoints = [ {
-      sourceVolume  = "efs-volume"
-      containerPath = "/usr/share/nginx/html"
-    }]
+    mountPoints = [
+        {
+          sourceVolume  = "nginx-config"
+          containerPath = "/etc/nginx"
+          readOnly      = false
+        },
+        {
+          sourceVolume  = "nginx-html"
+          containerPath = "/usr/share/nginx/html"
+          readOnly      = false
+        }
+      ]
 
     portMappings = [ {
       containerPort = 80
@@ -55,10 +70,20 @@ resource "aws_ecs_task_definition" "nginx_task" {
   }])
 
   volume {
-    name = "efs-volume"
-
+    name = "nginx-config"
     efs_volume_configuration {
-      file_system_id = var.efs_id
+      file_system_id     = var.efs_id
+      transit_encryption = "ENABLED"
+      root_directory     = "/nginx-config"
+    }
+  }
+
+  volume {
+    name = "nginx-html"
+    efs_volume_configuration {
+      file_system_id     = var.efs_id
+      transit_encryption = "ENABLED"
+      root_directory     = "/nginx-html"
     }
   }
 }
@@ -67,7 +92,7 @@ resource "aws_ecs_service" "nginx_service" {
   name            = "nginx-service"
   cluster         = var.ecs_cluster_id
   task_definition = aws_ecs_task_definition.nginx_task.arn
-  desired_count   = 1  # Here I configured service to run once
+  desired_count   = 1
   launch_type     = "FARGATE"
 
   load_balancer {
