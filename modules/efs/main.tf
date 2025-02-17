@@ -1,3 +1,4 @@
+# EFS MAIN
 resource "aws_security_group" "efs_sg" {
   name        = "efs-sg"
   description = "Allow inbound traffic on port 2049 for EFS"

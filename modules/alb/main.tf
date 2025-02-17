@@ -1,3 +1,4 @@
+# ALB MAIN
 resource "aws_lb" "trainee_alb" {
   name               = "tm-devops-trainee-alb"
   internal           = false

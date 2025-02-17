@@ -1,3 +1,4 @@
+# ECS MAIN
 resource "aws_ecs_cluster" "main" {
   name = "trainee-ecs-cluster"
 }
