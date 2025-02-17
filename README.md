@@ -1,4 +1,4 @@
-# tf-infrastructure-setup
+# Terraform Infrustructure Setup
 Creating a simple AWS infrastructure using IaC Terraform to deploy a basic web application. Utilizing Amazon EFS to store the HTML page content and Amazon ECS for containerized deployment.
 
 ## Prerequisites
@@ -41,12 +41,13 @@ terraform apply
 ```sh
 http://<alb_dns_name>:80
 ```
+### Desired result
+![image](https://github.com/user-attachments/assets/c58a6df1-8fbb-4ffd-ae09-ef7f3e98f061)
 
 ### 5️⃣ Cleanup (Optional)
 To remove all deployed resources:
 ```sh
 terraform destroy -auto-approve
 ```
-
 ---
 ✅ **Deployment complete!** 🚀
