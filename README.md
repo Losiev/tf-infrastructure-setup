@@ -7,6 +7,35 @@ Before starting the deployment, ensure you have the following:
 - Terraform installed (terraform -v)
 - Docker installed for local testing (docker -v)
 
+### Project Architecture
+```
+tf-infrastructure-setup/
+│
+├── modules/             
+│   ├── alb/             
+│   │   ├── main.tf      
+│   │   ├── variables.tf 
+│   │   └── outputs.tf   
+│   │
+│   ├── ecs/             
+│   │   ├── main.tf      
+│   │   ├── variables.tf 
+│   │   └── outputs.tf   
+│   │
+│   └── efs/             
+│       ├── main.tf      
+│       ├── variables.tf 
+│       └── outputs.tf   
+│
+├── main.tf              
+├── variables.tf         
+├── outputs.tf           
+└── terraform.tfvars     
+          
+```
+### Infrastructure Architecture Diagram
+![image](https://github.com/user-attachments/assets/aa078ddd-0773-4501-922a-4e65ae25ac75)
+
 ## Step-by-Step Deployment
 
 ### 1️⃣ Clone the Repository
@@ -45,4 +74,4 @@ To remove all deployed resources:
 terraform destroy -auto-approve
 ```
 ---
-✅ Deployment complete! 🚀
+### ✅ Deployment complete! 🚀
