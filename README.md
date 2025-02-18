@@ -29,8 +29,9 @@ tf-infrastructure-setup/
 │
 ├── main.tf              
 ├── variables.tf         
-├── outputs.tf           
-└── terraform.tfvars     
+├── outputs.tf  
+├── terraform.tfvars            
+└── index.html   
           
 ```
 ### Infrastructure Architecture Diagram
